@@ -51,3 +51,5 @@ Suggested exercises live in [docs/scenarios.md](docs/scenarios.md).
 - Node 22+.
 - Deterministic output where possible.
 - Small modules with obvious seams for PR-sized improvements.
+- Code modification events are emitted when tracked files change; a
+  documentation-only edit is enough to exercise that path.
