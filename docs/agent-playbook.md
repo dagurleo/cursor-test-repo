@@ -20,3 +20,7 @@ to explain, covered by tests, and small enough for a readable pull request.
 - Does the CLI still work without dependencies?
 - Did tests cover the behavior that changed?
 - Is the README or scenario documentation still accurate?
+
+## Code modification signals
+
+Edits to tracked files in this repository emit code modification events in the Cursor agent workspace, so tooling can observe that a modification occurred.
