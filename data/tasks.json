@@ -1,0 +1,68 @@
+[
+  {
+    "id": "TF-101",
+    "title": "Sketch onboarding checklist",
+    "status": "doing",
+    "priority": "high",
+    "owner": "mira",
+    "tags": ["docs", "product"],
+    "createdAt": "2026-05-01T09:30:00.000Z",
+    "dueDate": "2026-05-22",
+    "completedAt": null
+  },
+  {
+    "id": "TF-102",
+    "title": "Add tag filtering to CLI report",
+    "status": "todo",
+    "priority": "medium",
+    "owner": "eli",
+    "tags": ["cli", "feature"],
+    "createdAt": "2026-05-04T11:15:00.000Z",
+    "dueDate": "2026-05-28",
+    "completedAt": null
+  },
+  {
+    "id": "TF-103",
+    "title": "Document fixture schema",
+    "status": "done",
+    "priority": "low",
+    "owner": "mira",
+    "tags": ["docs"],
+    "createdAt": "2026-05-02T08:00:00.000Z",
+    "dueDate": "2026-05-10",
+    "completedAt": "2026-05-08T16:45:00.000Z"
+  },
+  {
+    "id": "TF-104",
+    "title": "Investigate stale blocked tasks",
+    "status": "blocked",
+    "priority": "urgent",
+    "owner": "niko",
+    "tags": ["ops", "triage"],
+    "createdAt": "2026-05-07T14:20:00.000Z",
+    "dueDate": "2026-05-18",
+    "completedAt": null
+  },
+  {
+    "id": "TF-105",
+    "title": "Create weekly board summary",
+    "status": "todo",
+    "priority": "high",
+    "owner": "eli",
+    "tags": ["reporting"],
+    "createdAt": "2026-05-09T10:00:00.000Z",
+    "dueDate": "2026-05-24",
+    "completedAt": null
+  },
+  {
+    "id": "TF-106",
+    "title": "Tighten task validation errors",
+    "status": "todo",
+    "priority": "medium",
+    "owner": "sana",
+    "tags": ["quality", "tests"],
+    "createdAt": "2026-05-11T13:10:00.000Z",
+    "dueDate": null,
+    "completedAt": null
+  }
+]

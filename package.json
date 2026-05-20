@@ -1,0 +1,16 @@
+{
+  "name": "task-forge-agent-playground",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A tiny no-dependency project for agents to practice repo workflows.",
+  "scripts": {
+    "test": "node --test",
+    "validate": "node scripts/validate-fixtures.js",
+    "report": "node src/cli.js --file data/tasks.json",
+    "check": "npm run validate && npm test"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
