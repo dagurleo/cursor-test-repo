@@ -8,19 +8,69 @@
       content="Task Forge is a tiny no-dependency JavaScript playground for agents to practice focused repository workflows."
     >
     <title>Task Forge: Agent Playground</title>
+    <script>
+      (() => {
+        const storageKey = "task-forge-theme";
+        const getStoredTheme = () => {
+          try {
+            return localStorage.getItem(storageKey);
+          } catch {
+            return null;
+          }
+        };
+        const storedTheme = getStoredTheme();
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = storedTheme === "dark" || storedTheme === "light"
+          ? storedTheme
+          : (prefersDark ? "dark" : "light");
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
     <style>
       :root {
-        color-scheme: light;
+        color-scheme: light dark;
         --ink: #172023;
         --muted: #5f6b6d;
         --paper: #f7f8f4;
         --panel: #ffffff;
         --line: #d9dfda;
+        --header-bg: rgb(247 248 244 / 86%);
+        --header-line: rgb(23 32 35 / 10%);
+        --lede: #3d4a4d;
+        --hero-line: rgb(23 32 35 / 16%);
+        --workflow-bg: #eef4f1;
+        --terminal-bg: #172023;
+        --terminal-ink: #ecf2ee;
         --teal: #0f766e;
         --amber: #c47a19;
         --green: #2f855a;
         --red: #b54736;
         --shadow: 0 18px 60px rgb(23 32 35 / 14%);
+      }
+
+      :root[data-theme="dark"] {
+        color-scheme: dark;
+        --ink: #f0f6f2;
+        --muted: #a8b8b2;
+        --paper: #101615;
+        --panel: #17201f;
+        --line: #30413c;
+        --header-bg: rgb(16 22 21 / 88%);
+        --header-line: rgb(240 246 242 / 12%);
+        --lede: #c7d4cf;
+        --hero-line: rgb(240 246 242 / 16%);
+        --workflow-bg: #121d1b;
+        --terminal-bg: #08100f;
+        --terminal-ink: #e9f4ef;
+        --teal: #4fd1c5;
+        --amber: #f2b55c;
+        --green: #75d18a;
+        --red: #f08a78;
+        --shadow: 0 18px 60px rgb(0 0 0 / 38%);
+      }
+
+      :root[data-theme="light"] {
+        color-scheme: light;
       }
 
       * {
@@ -50,8 +100,8 @@
         position: sticky;
         top: 0;
         z-index: 5;
-        border-bottom: 1px solid rgb(23 32 35 / 10%);
-        background: rgb(247 248 244 / 86%);
+        border-bottom: 1px solid var(--header-line);
+        background: var(--header-bg);
         backdrop-filter: blur(14px);
       }
 
@@ -107,6 +157,45 @@
         color: var(--ink);
       }
 
+      .theme-toggle {
+        display: inline-flex;
+        width: 44px;
+        height: 44px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        color: var(--ink);
+        cursor: pointer;
+      }
+
+      .theme-toggle:hover {
+        border-color: var(--teal);
+      }
+
+      .theme-toggle:focus-visible {
+        outline: 3px solid color-mix(in srgb, var(--teal) 45%, transparent);
+        outline-offset: 3px;
+      }
+
+      .theme-toggle svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .theme-toggle .moon-icon {
+        display: none;
+      }
+
+      :root[data-theme="dark"] .theme-toggle .sun-icon {
+        display: none;
+      }
+
+      :root[data-theme="dark"] .theme-toggle .moon-icon {
+        display: block;
+      }
+
       .hero {
         min-height: calc(100svh - 64px);
         padding: 56px 0 40px;
@@ -146,7 +235,7 @@
       .lede {
         max-width: 620px;
         margin-bottom: 28px;
-        color: #3d4a4d;
+        color: var(--lede);
         font-size: 1.2rem;
       }
 
@@ -220,7 +309,7 @@
         width: 100%;
         aspect-ratio: 16 / 9;
         object-fit: cover;
-        border: 1px solid rgb(23 32 35 / 16%);
+        border: 1px solid var(--hero-line);
         border-radius: 8px;
         box-shadow: var(--shadow);
       }
@@ -308,7 +397,7 @@
 
       .workflow {
         border-block: 1px solid var(--line);
-        background: #eef4f1;
+        background: var(--workflow-bg);
       }
 
       .workflow-grid {
@@ -320,10 +409,10 @@
 
       .terminal {
         overflow: hidden;
-        border: 1px solid #263436;
+        border: 1px solid var(--line);
         border-radius: 8px;
-        background: #172023;
-        color: #ecf2ee;
+        background: var(--terminal-bg);
+        color: var(--terminal-ink);
         box-shadow: 0 16px 50px rgb(23 32 35 / 16%);
       }
 
@@ -424,6 +513,10 @@
           font-size: 0.88rem;
         }
 
+        .theme-toggle {
+          flex: 0 0 44px;
+        }
+
         h1 {
           font-size: 2.3rem;
         }
@@ -461,6 +554,28 @@
           <a href="docs/scenarios.md">Scenarios</a>
           <a href="docs/agent-playbook.md">Playbook</a>
           <a href="https://github.com/dagurleo/cursor-test-repo">GitHub</a>
+          <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
+            <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 4V2m0 20v-2m5.66-14.66 1.42-1.42M4.92 19.08l1.42-1.42M20 12h2M2 12h2m15.08 7.08-1.42-1.42M6.34 5.34 4.92 3.92M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+            <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M20.5 14.4A7.6 7.6 0 0 1 9.6 3.5 8.2 8.2 0 1 0 20.5 14.4Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+          </button>
         </nav>
       </div>
     </header>
@@ -616,5 +731,35 @@ rtk npm run report</code></pre>
         Task Forge is a tiny no-dependency project for agent repository workflows.
       </div>
     </footer>
+    <script>
+      const themeToggle = document.querySelector(".theme-toggle");
+      const storageKey = "task-forge-theme";
+
+      function storeTheme(theme) {
+        try {
+          localStorage.setItem(storageKey, theme);
+        } catch {
+          // The selected theme still applies for the current page view.
+        }
+      }
+
+      function applyTheme(theme, shouldStore = false) {
+        document.documentElement.dataset.theme = theme;
+        if (shouldStore) {
+          storeTheme(theme);
+        }
+        themeToggle.setAttribute(
+          "aria-label",
+          theme === "dark" ? "Switch to light theme" : "Switch to dark theme",
+        );
+      }
+
+      applyTheme(document.documentElement.dataset.theme);
+
+      themeToggle.addEventListener("click", () => {
+        const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        applyTheme(nextTheme, true);
+      });
+    </script>
   </body>
 </html>
