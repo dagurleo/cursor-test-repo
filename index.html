@@ -5,226 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="Task Forge is a tiny no-dependency JavaScript playground for agents to practice focused repository workflows."
+      content="Task Forge is a focused JavaScript playground for agents to practice repository workflows with deterministic checks."
     >
     <link rel="icon" href="assets/favicon.ico" sizes="32x32">
     <title>Task Forge: Agent Playground</title>
-    <script>
-      (() => {
-        const storageKey = "task-forge-theme";
-        const getStoredTheme = () => {
-          try {
-            return localStorage.getItem(storageKey);
-          } catch {
-            return null;
-          }
-        };
-        const storedTheme = getStoredTheme();
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const theme = storedTheme === "dark" || storedTheme === "light"
-          ? storedTheme
-          : (prefersDark ? "dark" : "light");
-        document.documentElement.dataset.theme = theme;
-      })();
-    </script>
     <style>
       :root {
-        color-scheme: light dark;
-        --ink: #172023;
-        --muted: #5f6b6d;
-        --paper: #f7f8f4;
-        --panel: #ffffff;
-        --line: #d9dfda;
-        --header-bg: rgb(247 248 244 / 86%);
-        --header-line: rgb(23 32 35 / 10%);
-        --lede: #3d4a4d;
-        --hero-line: rgb(23 32 35 / 16%);
-        --hero-band: #e7efea;
-        --hero-card: #fbfcf8;
-        --workflow-bg: #eef4f1;
-        --terminal-bg: #172023;
-        --terminal-ink: #ecf2ee;
-        --teal: #0f766e;
-        --amber: #c47a19;
-        --green: #2f855a;
-        --red: #b54736;
-        --shadow: 0 18px 60px rgb(23 32 35 / 14%);
-      }
-
-      :root[data-theme="dark"] {
         color-scheme: dark;
-        --ink: #f0f6f2;
-        --muted: #a8b8b2;
-        --paper: #101615;
-        --panel: #17201f;
-        --line: #30413c;
-        --header-bg: rgb(16 22 21 / 88%);
-        --header-line: rgb(240 246 242 / 12%);
-        --lede: #c7d4cf;
-        --hero-line: rgb(240 246 242 / 16%);
-        --hero-band: #1c2927;
-        --hero-card: #1b2826;
-        --workflow-bg: #121d1b;
-        --terminal-bg: #08100f;
-        --terminal-ink: #e9f4ef;
-        --teal: #4fd1c5;
-        --amber: #f2b55c;
-        --green: #75d18a;
-        --red: #f08a78;
-        --shadow: 0 18px 60px rgb(0 0 0 / 38%);
-      }
-
-      :root[data-theme="light"] {
-        color-scheme: light;
+        --navy: #070b23;
+        --navy-2: #0a102f;
+        --panel: rgb(255 255 255 / 8%);
+        --panel-strong: rgb(255 255 255 / 13%);
+        --ink: #f7f9ff;
+        --muted: #aab5d8;
+        --soft: #dfe7ff;
+        --line: rgb(255 255 255 / 14%);
+        --purple: #8b5cf6;
+        --cyan: #22d3ee;
+        --mint: #2dd4bf;
+        --coral: #fb7185;
+        --amber: #fbbf24;
+        --shadow: 0 28px 80px rgb(0 0 0 / 42%);
       }
 
       * {
         box-sizing: border-box;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         margin: 0;
         color: var(--ink);
-        background: var(--paper);
+        background:
+          radial-gradient(circle at 16% 4%, rgb(34 211 238 / 34%), transparent 28rem),
+          radial-gradient(circle at 88% 12%, rgb(251 113 133 / 24%), transparent 30rem),
+          linear-gradient(145deg, #070b23 0%, #0b1235 45%, #111642 100%);
         font-family:
           Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
           "Segoe UI", sans-serif;
         line-height: 1.5;
       }
 
+      body::before {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+          linear-gradient(115deg, transparent 0 18%, rgb(139 92 246 / 52%) 18% 23%, transparent 23% 100%),
+          linear-gradient(115deg, transparent 0 54%, rgb(34 211 238 / 40%) 54% 59%, transparent 59% 100%),
+          linear-gradient(115deg, transparent 0 76%, rgb(251 191 36 / 32%) 76% 80%, transparent 80% 100%);
+        clip-path: polygon(0 0, 100% 0, 100% 44%, 0 68%);
+        content: "";
+        opacity: 0.82;
+        pointer-events: none;
+      }
+
       a {
         color: inherit;
-      }
-
-      .shell {
-        width: min(1120px, calc(100% - 32px));
-        margin: 0 auto;
-      }
-
-      .site-header {
-        position: sticky;
-        top: 0;
-        z-index: 5;
-        border-bottom: 1px solid var(--header-line);
-        background: var(--header-bg);
-        backdrop-filter: blur(14px);
-      }
-
-      .nav {
-        display: flex;
-        min-height: 64px;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-      }
-
-      .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 800;
-        text-decoration: none;
-      }
-
-      .brand-mark {
-        display: grid;
-        width: 32px;
-        height: 32px;
-        place-items: center;
-        border: 2px solid var(--ink);
-        border-radius: 8px;
-        background: var(--panel);
-        box-shadow: 4px 4px 0 var(--amber);
-      }
-
-      .brand-mark::before {
-        width: 14px;
-        height: 14px;
-        border-right: 3px solid var(--teal);
-        border-bottom: 3px solid var(--teal);
-        content: "";
-        transform: rotate(45deg) translateY(-3px);
-      }
-
-      .nav-links {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-        color: var(--muted);
-        font-size: 0.95rem;
-      }
-
-      .nav-links a {
-        text-decoration: none;
-      }
-
-      .nav-links a:hover {
-        color: var(--ink);
-      }
-
-      .theme-toggle {
-        display: inline-flex;
-        width: 44px;
-        height: 44px;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--panel);
-        color: var(--ink);
-        cursor: pointer;
-      }
-
-      .theme-toggle:hover {
-        border-color: var(--teal);
-      }
-
-      .theme-toggle:focus-visible {
-        outline: 3px solid color-mix(in srgb, var(--teal) 45%, transparent);
-        outline-offset: 3px;
-      }
-
-      .theme-toggle svg {
-        width: 20px;
-        height: 20px;
-      }
-
-      .theme-toggle .moon-icon {
-        display: none;
-      }
-
-      :root[data-theme="dark"] .theme-toggle .sun-icon {
-        display: none;
-      }
-
-      :root[data-theme="dark"] .theme-toggle .moon-icon {
-        display: block;
-      }
-
-      .hero {
-        min-height: calc(100svh - 64px);
-        display: grid;
-        align-items: center;
-        border-bottom: 1px solid var(--line);
-        background:
-          linear-gradient(90deg, transparent 0 58%, var(--hero-band) 58% 100%),
-          var(--paper);
-        padding: 64px 0 48px;
-      }
-
-      .hero-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
-        gap: 48px;
-        align-items: center;
-      }
-
-      .eyebrow {
-        margin: 0 0 14px;
-        color: var(--teal);
-        font-size: 0.9rem;
-        font-weight: 800;
-        text-transform: uppercase;
       }
 
       h1,
@@ -234,268 +74,466 @@
         margin-top: 0;
       }
 
+      .shell {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 1px solid rgb(255 255 255 / 8%);
+        background: rgb(7 11 35 / 76%);
+        backdrop-filter: blur(18px);
+      }
+
+      .nav {
+        display: flex;
+        min-height: 68px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .brand,
+      .nav-links,
+      .nav-actions {
+        display: flex;
+        align-items: center;
+      }
+
+      .brand {
+        gap: 10px;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, var(--cyan), var(--purple) 55%, var(--coral));
+        box-shadow: 0 12px 30px rgb(34 211 238 / 24%);
+      }
+
+      .brand-mark::before {
+        width: 13px;
+        height: 13px;
+        border-right: 3px solid #fff;
+        border-bottom: 3px solid #fff;
+        content: "";
+        transform: rotate(45deg) translateY(-3px);
+      }
+
+      .nav-links {
+        gap: 28px;
+        color: var(--soft);
+        font-size: 0.94rem;
+        font-weight: 700;
+      }
+
+      .nav-links a,
+      .nav-actions a {
+        text-decoration: none;
+      }
+
+      .nav-links a:hover,
+      .nav-actions a:hover {
+        color: #fff;
+      }
+
+      .nav-actions {
+        gap: 12px;
+      }
+
+      .nav-pill,
+      .button {
+        display: inline-flex;
+        min-height: 42px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border-radius: 999px;
+        font-weight: 800;
+        text-decoration: none;
+        transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+      }
+
+      .nav-pill {
+        padding: 8px 14px;
+        background: rgb(255 255 255 / 14%);
+        color: #fff;
+      }
+
+      .button {
+        padding: 11px 18px;
+      }
+
+      .button.primary {
+        background: #fff;
+        color: #111642;
+        box-shadow: 0 16px 38px rgb(255 255 255 / 18%);
+      }
+
+      .button.secondary {
+        background: rgb(255 255 255 / 13%);
+        color: #fff;
+      }
+
+      .button:hover,
+      .nav-pill:hover {
+        transform: translateY(-2px);
+      }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: 86px 0 72px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+        gap: 42px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        color: #b9f8ff;
+        font-size: 0.86rem;
+        font-weight: 850;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        width: 34px;
+        height: 2px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--cyan), var(--coral));
+        content: "";
+      }
+
       h1 {
-        max-width: 720px;
-        margin-bottom: 20px;
-        font-size: 4.35rem;
-        line-height: 1;
+        max-width: 760px;
+        margin-bottom: 24px;
+        font-size: clamp(3.4rem, 8vw, 6.8rem);
+        line-height: 0.94;
+      }
+
+      .gradient-text {
+        display: block;
+        background: linear-gradient(90deg, #fff 0%, #a8f3ff 30%, #d8c4ff 62%, #ffd3dd 100%);
+        background-clip: text;
+        color: transparent;
       }
 
       .lede {
-        max-width: 620px;
+        max-width: 630px;
         margin-bottom: 28px;
-        color: var(--lede);
-        font-size: 1.2rem;
+        color: var(--soft);
+        font-size: clamp(1.06rem, 2vw, 1.28rem);
       }
 
       .actions {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
-        margin-bottom: 26px;
+        margin-bottom: 34px;
       }
 
-      .button {
-        display: inline-flex;
-        min-height: 44px;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        border: 1px solid var(--ink);
-        border-radius: 8px;
-        padding: 10px 16px;
-        background: var(--ink);
-        color: #fff;
-        font-weight: 750;
-        text-decoration: none;
-      }
-
-      .button.secondary {
-        background: var(--panel);
-        color: var(--ink);
-      }
-
-      .button:hover {
-        transform: translateY(-1px);
-      }
-
-      .stats {
+      .metrics {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 12px;
-        max-width: 620px;
+        max-width: 660px;
       }
 
-      .stat {
+      .metric {
         border: 1px solid var(--line);
-        border-top: 3px solid var(--teal);
         border-radius: 8px;
-        background: color-mix(in srgb, var(--panel) 82%, transparent);
-        padding: 12px;
+        background: rgb(255 255 255 / 7%);
+        padding: 14px;
       }
 
-      .stat:nth-child(2) {
-        border-color: var(--amber);
-      }
-
-      .stat:nth-child(3) {
-        border-color: var(--green);
-      }
-
-      .stat strong {
+      .metric strong {
         display: block;
-        font-size: 1.35rem;
+        font-size: 1.45rem;
+        line-height: 1.1;
       }
 
-      .stat span {
+      .metric span {
         color: var(--muted);
         font-size: 0.9rem;
       }
 
-      .hero-visual {
+      .product-stage {
         position: relative;
-        min-height: 520px;
+        min-height: 570px;
+        animation: floatIn 700ms ease-out both;
+      }
+
+      .dashboard-card,
+      .code-card,
+      .status-card {
+        position: absolute;
         overflow: hidden;
-        border: 1px solid var(--hero-line);
+        border: 1px solid var(--line);
         border-radius: 8px;
-        background:
-          linear-gradient(145deg, rgb(255 255 255 / 72%), transparent 44%),
-          linear-gradient(180deg, var(--hero-card), var(--hero-band));
+        background: linear-gradient(180deg, rgb(18 26 64 / 94%), rgb(8 13 38 / 94%));
         box-shadow: var(--shadow);
       }
 
-      .hero-visual::before {
-        position: absolute;
-        inset: 18px;
-        border: 1px solid color-mix(in srgb, var(--teal) 24%, transparent);
-        border-radius: 8px;
-        content: "";
+      .dashboard-card {
+        inset: 34px 0 auto auto;
+        width: min(94%, 650px);
       }
 
-      .image-badge {
-        position: absolute;
-        top: 22px;
-        left: 22px;
-        z-index: 2;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: color-mix(in srgb, var(--panel) 90%, transparent);
-        padding: 8px 10px;
-        color: var(--muted);
-        font-size: 0.86rem;
-        font-weight: 750;
+      .dashboard-card img {
+        display: block;
+        width: 100%;
+        min-height: 365px;
+        object-fit: cover;
+        opacity: 0.9;
       }
 
-      .image-badge::before {
+      .dashboard-overlay {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgb(9 14 41 / 22%), transparent 45%),
+          linear-gradient(180deg, transparent 48%, rgb(9 14 41 / 66%));
+        pointer-events: none;
+      }
+
+      .window-bar {
+        display: flex;
+        gap: 7px;
+        border-bottom: 1px solid rgb(255 255 255 / 10%);
+        padding: 12px;
+      }
+
+      .window-bar span {
         width: 10px;
         height: 10px;
         border-radius: 50%;
-        background: var(--green);
-        content: "";
+        background: var(--coral);
       }
 
-      .hero-visual img {
-        position: absolute;
-        right: -10%;
-        bottom: -5%;
-        display: block;
-        width: min(118%, 720px);
-        max-width: none;
-        height: auto;
+      .window-bar span:nth-child(2) {
+        background: var(--amber);
+      }
+
+      .window-bar span:nth-child(3) {
+        background: var(--mint);
+      }
+
+      .code-card {
+        left: 0;
+        bottom: 20px;
+        width: min(82%, 430px);
+        animation: drift 7s ease-in-out infinite;
+      }
+
+      pre {
+        margin: 0;
+        overflow-x: auto;
+        padding: 18px 20px 22px;
+        color: #dce7ff;
+        font: 0.88rem / 1.65 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      }
+
+      .token {
+        color: #67e8f9;
+      }
+
+      .string {
+        color: #fda4af;
+      }
+
+      .status-card {
+        right: 18px;
+        bottom: 0;
+        width: min(48%, 275px);
+        padding: 16px;
+        animation: drift 7s ease-in-out 900ms infinite;
+      }
+
+      .status-card h3 {
+        margin-bottom: 12px;
+        font-size: 0.96rem;
+      }
+
+      .check-row {
+        display: grid;
+        grid-template-columns: 18px 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 9px 0;
+        color: var(--soft);
+        font-size: 0.9rem;
+      }
+
+      .check-row::before {
+        display: grid;
+        width: 18px;
+        height: 18px;
+        place-items: center;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--mint), var(--cyan));
+        color: #05162c;
+        content: "✓";
+        font-size: 0.72rem;
+        font-weight: 900;
+      }
+
+      .check-row span:last-child {
+        color: #8eeeff;
+        font-size: 0.78rem;
+        font-weight: 800;
       }
 
       main {
-        background: var(--panel);
+        background: #f6f9ff;
+        color: #111642;
       }
 
       section {
-        padding: 72px 0;
+        padding: 76px 0;
       }
 
       .section-heading {
         display: flex;
         align-items: end;
         justify-content: space-between;
-        gap: 24px;
-        margin-bottom: 28px;
+        gap: 28px;
+        margin-bottom: 30px;
       }
 
       h2 {
+        max-width: 690px;
         margin-bottom: 0;
-        font-size: 2rem;
-        line-height: 1.12;
+        font-size: clamp(2.1rem, 4vw, 3.65rem);
+        line-height: 1.02;
+      }
+
+      .section-heading p,
+      .feature-card p,
+      .map-card p {
+        color: #4f5f88;
       }
 
       .section-heading p {
-        max-width: 480px;
+        max-width: 440px;
         margin-bottom: 0;
-        color: var(--muted);
       }
 
-      .practice-grid {
+      .feature-grid {
         display: grid;
         grid-template-columns: repeat(5, minmax(0, 1fr));
         gap: 14px;
       }
 
-      .practice-card,
+      .feature-card,
       .map-card {
-        border: 1px solid var(--line);
+        border: 1px solid #dfe6f7;
         border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 18px 48px rgb(17 22 66 / 8%);
+      }
+
+      .feature-card {
+        min-height: 176px;
         padding: 18px;
-        background: var(--panel);
       }
 
-      .practice-card {
-        min-height: 152px;
+      .feature-icon {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        background: #10163f;
+        color: #fff;
+        font-weight: 900;
       }
 
-      .practice-card h3,
+      .feature-card:nth-child(2) .feature-icon {
+        background: var(--purple);
+      }
+
+      .feature-card:nth-child(3) .feature-icon {
+        background: #0891b2;
+      }
+
+      .feature-card:nth-child(4) .feature-icon {
+        background: #0f766e;
+      }
+
+      .feature-card:nth-child(5) .feature-icon {
+        background: #be123c;
+      }
+
+      .feature-card h3,
       .map-card h3 {
         margin-bottom: 8px;
         font-size: 1rem;
       }
 
-      .practice-card p,
+      .feature-card p,
       .map-card p {
         margin-bottom: 0;
-        color: var(--muted);
         font-size: 0.94rem;
       }
 
-      .dot {
-        display: block;
-        width: 18px;
-        height: 18px;
-        margin-bottom: 18px;
-        border: 3px solid var(--teal);
-        border-radius: 50%;
+      .developer-band {
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 80% 20%, rgb(34 211 238 / 20%), transparent 24rem),
+          linear-gradient(135deg, #080d29, #111642);
+        color: var(--ink);
       }
 
-      .practice-card:nth-child(2) .dot,
-      .practice-card:nth-child(5) .dot {
-        border-color: var(--amber);
+      .developer-band::before {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(110deg, transparent 0 58%, rgb(139 92 246 / 36%) 58% 64%, transparent 64% 100%);
+        content: "";
+        pointer-events: none;
       }
 
-      .practice-card:nth-child(3) .dot {
-        border-color: var(--green);
-      }
-
-      .practice-card:nth-child(4) .dot {
-        border-color: var(--red);
-      }
-
-      .workflow {
-        border-block: 1px solid var(--line);
-        background: var(--workflow-bg);
-      }
-
-      .workflow-grid {
+      .developer-grid {
+        position: relative;
         display: grid;
-        grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+        grid-template-columns: minmax(0, 0.86fr) minmax(360px, 1.14fr);
         gap: 34px;
-        align-items: start;
+        align-items: center;
+      }
+
+      .developer-band .lede {
+        color: var(--soft);
       }
 
       .terminal {
         overflow: hidden;
         border: 1px solid var(--line);
         border-radius: 8px;
-        background: var(--terminal-bg);
-        color: var(--terminal-ink);
-        box-shadow: 0 16px 50px rgb(23 32 35 / 16%);
+        background: rgb(3 7 24 / 90%);
+        box-shadow: var(--shadow);
       }
 
-      .terminal-bar {
-        display: flex;
-        gap: 7px;
-        border-bottom: 1px solid rgb(255 255 255 / 12%);
-        padding: 12px;
-      }
-
-      .terminal-bar span {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #e36d5f;
-      }
-
-      .terminal-bar span:nth-child(2) {
-        background: #e8b44f;
-      }
-
-      .terminal-bar span:nth-child(3) {
-        background: #4fae72;
-      }
-
-      pre {
-        margin: 0;
-        overflow-x: auto;
-        padding: 22px;
-        font: 0.95rem / 1.65 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      .terminal pre {
+        min-height: 280px;
       }
 
       .map-grid {
@@ -504,96 +542,137 @@
         gap: 14px;
       }
 
+      .map-card {
+        padding: 18px;
+      }
+
       .map-card code,
       pre code {
         font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
       }
 
       .map-card code {
-        color: var(--teal);
-        font-weight: 700;
+        color: #635bff;
+        font-weight: 800;
       }
 
       .footer {
-        border-top: 1px solid var(--line);
+        border-top: 1px solid #dfe6f7;
+        background: #fff;
         padding: 28px 0;
-        color: var(--muted);
+        color: #536084;
         font-size: 0.92rem;
       }
 
-      @media (max-width: 920px) {
+      @keyframes floatIn {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes drift {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 1ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 1ms !important;
+        }
+      }
+
+      @media (max-width: 980px) {
         .hero-grid,
-        .workflow-grid {
+        .developer-grid {
           grid-template-columns: 1fr;
         }
 
         .hero {
-          min-height: auto;
-          padding-top: 40px;
-          background: var(--paper);
+          padding-top: 58px;
         }
 
-        h1 {
-          font-size: 3rem;
+        .product-stage {
+          min-height: 520px;
         }
 
-        .hero-visual {
-          max-width: 760px;
-          min-height: 460px;
+        .dashboard-card {
+          width: 100%;
         }
 
-        .practice-grid,
-        .map-grid {
+        .feature-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
 
-      @media (max-width: 640px) {
+      @media (max-width: 720px) {
         .shell {
-          width: min(100% - 24px, 1120px);
+          width: min(100% - 24px, 1180px);
         }
 
         .nav {
-          align-items: flex-start;
-          flex-direction: column;
-          justify-content: center;
-          gap: 8px;
+          flex-wrap: wrap;
+          gap: 12px;
           padding: 12px 0;
         }
 
         .nav-links {
+          order: 3;
           width: 100%;
           justify-content: space-between;
-          gap: 10px;
-          font-size: 0.88rem;
+          gap: 12px;
+          overflow-x: auto;
+          padding-bottom: 2px;
+          font-size: 0.86rem;
         }
 
-        .theme-toggle {
-          flex: 0 0 44px;
+        .nav-actions {
+          margin-left: auto;
+        }
+
+        .hero {
+          padding: 42px 0 54px;
         }
 
         h1 {
-          font-size: 2.3rem;
+          font-size: clamp(3rem, 15vw, 4.4rem);
         }
 
-        .lede {
-          font-size: 1.05rem;
-        }
-
-        .stats,
-        .practice-grid,
+        .metrics,
+        .feature-grid,
         .map-grid {
           grid-template-columns: 1fr;
         }
 
-        .hero-visual {
-          min-height: 340px;
+        .product-stage {
+          min-height: 470px;
         }
 
-        .hero-visual img {
-          right: -18%;
-          bottom: -2%;
-          width: 125%;
+        .dashboard-card img {
+          min-height: 300px;
+        }
+
+        .code-card {
+          width: 92%;
+        }
+
+        .status-card {
+          right: 0;
+          width: 74%;
         }
 
         .section-heading {
@@ -602,7 +681,34 @@
         }
 
         section {
-          padding: 48px 0;
+          padding: 54px 0;
+        }
+      }
+
+      @media (max-width: 460px) {
+        .brand span:last-child {
+          max-width: 120px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .nav-pill {
+          min-height: 38px;
+          padding: 7px 12px;
+          font-size: 0.88rem;
+        }
+
+        .actions .button {
+          width: 100%;
+        }
+
+        .product-stage {
+          min-height: 430px;
+        }
+
+        .status-card {
+          width: 86%;
         }
       }
     </style>
@@ -615,73 +721,77 @@
           <span>Task Forge</span>
         </a>
         <nav class="nav-links" aria-label="Repository links">
-          <a href="README.md">README</a>
-          <a href="docs/scenarios.md">Scenarios</a>
-          <a href="docs/agent-playbook.md">Playbook</a>
+          <a href="#practice">Products</a>
+          <a href="#workflow">Developers</a>
+          <a href="#map">Resources</a>
           <a href="https://github.com/dagurleo/cursor-test-repo">GitHub</a>
-          <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
-            <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M12 4V2m0 20v-2m5.66-14.66 1.42-1.42M4.92 19.08l1.42-1.42M20 12h2M2 12h2m15.08 7.08-1.42-1.42M6.34 5.34 4.92 3.92M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-              />
-            </svg>
-            <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M20.5 14.4A7.6 7.6 0 0 1 9.6 3.5 8.2 8.2 0 1 0 20.5 14.4Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-              />
-            </svg>
-          </button>
         </nav>
+        <div class="nav-actions">
+          <a class="nav-pill" href="README.md">Start now</a>
+        </div>
       </div>
     </header>
 
     <div class="hero">
       <div class="shell hero-grid">
         <div>
-          <p class="eyebrow">No-dependency JavaScript playground</p>
-          <h1>Task Forge Agent Playground</h1>
+          <p class="eyebrow">Agent workflow infrastructure</p>
+          <h1>
+            Ship focused PRs
+            <span class="gradient-text">with deterministic checks.</span>
+          </h1>
           <p class="lede">
-            A compact repository where agents can read unfamiliar code, make a
-            focused change, run deterministic checks, and leave a tidy pull
-            request behind.
+            Task Forge gives coding agents a compact JavaScript system for
+            reading unfamiliar code, changing behavior, validating fixtures, and
+            drafting review-ready pull requests.
           </p>
           <div class="actions">
-            <a class="button" href="README.md">Read the README</a>
-            <a class="button secondary" href="docs/scenarios.md">Pick an exercise</a>
+            <a class="button primary" href="README.md">Read the README</a>
+            <a class="button secondary" href="docs/scenarios.md">Explore scenarios</a>
           </div>
-          <div class="stats" aria-label="Project constraints">
-            <div class="stat">
+          <div class="metrics" aria-label="Project constraints">
+            <div class="metric">
               <strong>0</strong>
               <span>runtime dependencies</span>
             </div>
-            <div class="stat">
+            <div class="metric">
               <strong>Node 22+</strong>
               <span>built-in test runner</span>
             </div>
-            <div class="stat">
+            <div class="metric">
               <strong>PR-sized</strong>
               <span>agent exercises</span>
             </div>
           </div>
         </div>
-        <div class="hero-visual" aria-label="Task Forge robot header image">
-          <span class="image-badge">Ready for the next PR</span>
-          <img
-            src="assets/robot-header.png"
-            alt="A friendly white robot assistant wearing a headset."
-            width="1232"
-            height="1180"
-          >
+        <div class="product-stage" aria-label="Task Forge product preview">
+          <div class="dashboard-card">
+            <img
+              src="assets/task-forge-hero.png"
+              alt="A dark developer workspace with task cards, a terminal screen, and checklist controls."
+              width="1672"
+              height="941"
+            >
+            <div class="dashboard-overlay"></div>
+          </div>
+          <div class="code-card" aria-label="Report command preview">
+            <div class="window-bar" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <pre><code><span class="token">$</span> npm run report
+
+<span class="token">board.summary</span>({
+  fixture: <span class="string">"data/tasks.json"</span>,
+  output: <span class="string">"markdown"</span>,
+  checks: [<span class="string">"validate"</span>, <span class="string">"test"</span>]
+})</code></pre>
+          </div>
+          <div class="status-card" aria-label="Passing checks">
+            <h3>Review package</h3>
+            <div class="check-row"><span>Fixtures</span><span>clean</span></div>
+            <div class="check-row"><span>Tests</span><span>passed</span></div>
+            <div class="check-row"><span>PR notes</span><span>ready</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -690,36 +800,35 @@
       <section id="practice">
         <div class="shell">
           <div class="section-heading">
-            <h2>What Agents Practice</h2>
+            <h2>Everything agents need to practice repository delivery.</h2>
             <p>
-              The repository is intentionally small, with enough real structure
-              to exercise code reading, behavior changes, tests, docs, and PR
-              communication.
+              The codebase stays intentionally small while covering source
+              reading, behavior changes, docs, tests, and concise review notes.
             </p>
           </div>
-          <div class="practice-grid">
-            <article class="practice-card">
-              <span class="dot" aria-hidden="true"></span>
+          <div class="feature-grid">
+            <article class="feature-card">
+              <span class="feature-icon" aria-hidden="true">1</span>
               <h3>Explain the model</h3>
               <p>Trace task normalization, filtering, summaries, and sprint planning.</p>
             </article>
-            <article class="practice-card">
-              <span class="dot" aria-hidden="true"></span>
+            <article class="feature-card">
+              <span class="feature-icon" aria-hidden="true">2</span>
               <h3>Add a filter</h3>
               <p>Keep CLI behavior focused while preserving existing report output.</p>
             </article>
-            <article class="practice-card">
-              <span class="dot" aria-hidden="true"></span>
+            <article class="feature-card">
+              <span class="feature-icon" aria-hidden="true">3</span>
               <h3>Validate fixtures</h3>
               <p>Use deterministic data checks to keep the canonical board reliable.</p>
             </article>
-            <article class="practice-card">
-              <span class="dot" aria-hidden="true"></span>
+            <article class="feature-card">
+              <span class="feature-icon" aria-hidden="true">4</span>
               <h3>Extend reports</h3>
               <p>Render Markdown output that remains easy to test and review.</p>
             </article>
-            <article class="practice-card">
-              <span class="dot" aria-hidden="true"></span>
+            <article class="feature-card">
+              <span class="feature-icon" aria-hidden="true">5</span>
               <h3>Draft the PR</h3>
               <p>Summarize scope, checks, and tradeoffs for future agents.</p>
             </article>
@@ -727,28 +836,35 @@
         </div>
       </section>
 
-      <section class="workflow" id="workflow">
-        <div class="shell workflow-grid">
+      <section class="developer-band" id="workflow">
+        <div class="shell developer-grid">
           <div>
-            <p class="eyebrow">Recommended workflow</p>
-            <h2>Small changes with checks agents can trust.</h2>
+            <p class="eyebrow">Developer workflow</p>
+            <h2>Simple commands. Reliable outputs. No install ceremony.</h2>
             <p class="lede">
               Start with the README and relevant source, pick one scenario, make
-              the smallest useful change, then rerun the fixture validation and
-              tests before writing the PR notes.
+              the smallest useful change, then rerun validation and tests before
+              writing PR notes.
             </p>
+            <div class="actions">
+              <a class="button primary" href="docs/agent-playbook.md">Open playbook</a>
+              <a class="button secondary" href="docs/scenarios.md">Pick an exercise</a>
+            </div>
           </div>
           <div class="terminal" aria-label="Quick start commands">
-            <div class="terminal-bar" aria-hidden="true">
+            <div class="window-bar" aria-hidden="true">
               <span></span><span></span><span></span>
             </div>
-            <pre><code>rtk node --test
-rtk node scripts/validate-fixtures.js
-rtk node src/cli.js --file data/tasks.json
+            <pre><code><span class="token">$</span> node --test
+<span class="string">ok</span> 1 - task-board summaries
+<span class="string">ok</span> 2 - report rendering
+<span class="string">ok</span> 3 - cli output
 
-rtk npm test
-rtk npm run validate
-rtk npm run report</code></pre>
+<span class="token">$</span> node scripts/validate-fixtures.js
+<span class="string">validated</span> data/tasks.json
+
+<span class="token">$</span> node src/cli.js --file data/tasks.json
+<span class="string">generated</span> sprint report markdown</code></pre>
           </div>
         </div>
       </section>
@@ -756,10 +872,10 @@ rtk npm run report</code></pre>
       <section id="map">
         <div class="shell">
           <div class="section-heading">
-            <h2>Project Map</h2>
+            <h2>A compact project map for fast orientation.</h2>
             <p>
-              The codebase has just enough surface area for meaningful agent
-              practice without requiring package installation.
+              Each surface is small enough to understand quickly and real enough
+              to support meaningful implementation work.
             </p>
           </div>
           <div class="map-grid">
@@ -797,35 +913,5 @@ rtk npm run report</code></pre>
         Task Forge is a tiny no-dependency project for agent repository workflows.
       </div>
     </footer>
-    <script>
-      const themeToggle = document.querySelector(".theme-toggle");
-      const storageKey = "task-forge-theme";
-
-      function storeTheme(theme) {
-        try {
-          localStorage.setItem(storageKey, theme);
-        } catch {
-          // The selected theme still applies for the current page view.
-        }
-      }
-
-      function applyTheme(theme, shouldStore = false) {
-        document.documentElement.dataset.theme = theme;
-        if (shouldStore) {
-          storeTheme(theme);
-        }
-        themeToggle.setAttribute(
-          "aria-label",
-          theme === "dark" ? "Switch to light theme" : "Switch to dark theme",
-        );
-      }
-
-      applyTheme(document.documentElement.dataset.theme);
-
-      themeToggle.addEventListener("click", () => {
-        const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-        applyTheme(nextTheme, true);
-      });
-    </script>
   </body>
 </html>
