@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Task Forge is a tiny no-dependency JavaScript playground for agents to practice focused repository workflows."
+    >
+    <title>Task Forge: Agent Playground</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #172023;
+        --muted: #5f6b6d;
+        --paper: #f7f8f4;
+        --panel: #ffffff;
+        --line: #d9dfda;
+        --teal: #0f766e;
+        --amber: #c47a19;
+        --green: #2f855a;
+        --red: #b54736;
+        --shadow: 0 18px 60px rgb(23 32 35 / 14%);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .shell {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        border-bottom: 1px solid rgb(23 32 35 / 10%);
+        background: rgb(247 248 244 / 86%);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav {
+        display: flex;
+        min-height: 64px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 4px 4px 0 var(--amber);
+      }
+
+      .brand-mark::before {
+        width: 14px;
+        height: 14px;
+        border-right: 3px solid var(--teal);
+        border-bottom: 3px solid var(--teal);
+        content: "";
+        transform: rotate(45deg) translateY(-3px);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+      }
+
+      .nav-links a:hover {
+        color: var(--ink);
+      }
+
+      .hero {
+        min-height: calc(100svh - 64px);
+        padding: 56px 0 40px;
+        display: grid;
+        align-items: center;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.15fr);
+        gap: 48px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        margin: 0 0 14px;
+        color: var(--teal);
+        font-size: 0.9rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 720px;
+        margin-bottom: 20px;
+        font-size: 4rem;
+        line-height: 1;
+      }
+
+      .lede {
+        max-width: 620px;
+        margin-bottom: 28px;
+        color: #3d4a4d;
+        font-size: 1.2rem;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 28px;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        padding: 10px 16px;
+        background: var(--ink);
+        color: #fff;
+        font-weight: 750;
+        text-decoration: none;
+      }
+
+      .button.secondary {
+        background: var(--panel);
+        color: var(--ink);
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        max-width: 620px;
+      }
+
+      .stat {
+        border-top: 3px solid var(--teal);
+        padding-top: 10px;
+      }
+
+      .stat:nth-child(2) {
+        border-color: var(--amber);
+      }
+
+      .stat:nth-child(3) {
+        border-color: var(--green);
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.35rem;
+      }
+
+      .stat span {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .hero-visual {
+        position: relative;
+      }
+
+      .hero-visual img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        border: 1px solid rgb(23 32 35 / 16%);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      main {
+        background: var(--panel);
+      }
+
+      section {
+        padding: 72px 0;
+      }
+
+      .section-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 28px;
+      }
+
+      h2 {
+        margin-bottom: 0;
+        font-size: 2rem;
+        line-height: 1.12;
+      }
+
+      .section-heading p {
+        max-width: 480px;
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      .practice-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .practice-card,
+      .map-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+        background: var(--panel);
+      }
+
+      .practice-card {
+        min-height: 152px;
+      }
+
+      .practice-card h3,
+      .map-card h3 {
+        margin-bottom: 8px;
+        font-size: 1rem;
+      }
+
+      .practice-card p,
+      .map-card p {
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+
+      .dot {
+        display: block;
+        width: 18px;
+        height: 18px;
+        margin-bottom: 18px;
+        border: 3px solid var(--teal);
+        border-radius: 50%;
+      }
+
+      .practice-card:nth-child(2) .dot,
+      .practice-card:nth-child(5) .dot {
+        border-color: var(--amber);
+      }
+
+      .practice-card:nth-child(3) .dot {
+        border-color: var(--green);
+      }
+
+      .practice-card:nth-child(4) .dot {
+        border-color: var(--red);
+      }
+
+      .workflow {
+        border-block: 1px solid var(--line);
+        background: #eef4f1;
+      }
+
+      .workflow-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+        gap: 34px;
+        align-items: start;
+      }
+
+      .terminal {
+        overflow: hidden;
+        border: 1px solid #263436;
+        border-radius: 8px;
+        background: #172023;
+        color: #ecf2ee;
+        box-shadow: 0 16px 50px rgb(23 32 35 / 16%);
+      }
+
+      .terminal-bar {
+        display: flex;
+        gap: 7px;
+        border-bottom: 1px solid rgb(255 255 255 / 12%);
+        padding: 12px;
+      }
+
+      .terminal-bar span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #e36d5f;
+      }
+
+      .terminal-bar span:nth-child(2) {
+        background: #e8b44f;
+      }
+
+      .terminal-bar span:nth-child(3) {
+        background: #4fae72;
+      }
+
+      pre {
+        margin: 0;
+        overflow-x: auto;
+        padding: 22px;
+        font: 0.95rem / 1.65 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      }
+
+      .map-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .map-card code,
+      pre code {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      }
+
+      .map-card code {
+        color: var(--teal);
+        font-weight: 700;
+      }
+
+      .footer {
+        border-top: 1px solid var(--line);
+        padding: 28px 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 920px) {
+        .hero-grid,
+        .workflow-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-top: 40px;
+        }
+
+        h1 {
+          font-size: 3rem;
+        }
+
+        .hero-visual {
+          max-width: 760px;
+        }
+
+        .practice-grid,
+        .map-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .shell {
+          width: min(100% - 24px, 1120px);
+        }
+
+        .nav {
+          align-items: flex-start;
+          flex-direction: column;
+          justify-content: center;
+          gap: 8px;
+          padding: 12px 0;
+        }
+
+        .nav-links {
+          width: 100%;
+          justify-content: space-between;
+          gap: 10px;
+          font-size: 0.88rem;
+        }
+
+        h1 {
+          font-size: 2.3rem;
+        }
+
+        .lede {
+          font-size: 1.05rem;
+        }
+
+        .stats,
+        .practice-grid,
+        .map-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .section-heading {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        section {
+          padding: 48px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell nav" aria-label="Primary navigation">
+        <a class="brand" href="#">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Task Forge</span>
+        </a>
+        <nav class="nav-links" aria-label="Repository links">
+          <a href="README.md">README</a>
+          <a href="docs/scenarios.md">Scenarios</a>
+          <a href="docs/agent-playbook.md">Playbook</a>
+          <a href="https://github.com/dagurleo/cursor-test-repo">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <p class="eyebrow">No-dependency JavaScript playground</p>
+          <h1>Task Forge: Agent Playground</h1>
+          <p class="lede">
+            A compact repository where agents can read unfamiliar code, make a
+            focused change, run deterministic checks, and leave a tidy pull
+            request behind.
+          </p>
+          <div class="actions">
+            <a class="button" href="README.md">Read the README</a>
+            <a class="button secondary" href="docs/scenarios.md">Pick an exercise</a>
+          </div>
+          <div class="stats" aria-label="Project constraints">
+            <div class="stat">
+              <strong>0</strong>
+              <span>runtime dependencies</span>
+            </div>
+            <div class="stat">
+              <strong>Node 22+</strong>
+              <span>built-in test runner</span>
+            </div>
+            <div class="stat">
+              <strong>PR-sized</strong>
+              <span>agent exercises</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Task Forge workflow illustration">
+          <img
+            src="assets/task-forge-hero.png"
+            alt="A clean developer workbench with a task board, terminal, notes, and test checkmarks."
+            width="1672"
+            height="941"
+          >
+        </div>
+      </div>
+    </div>
+
+    <main>
+      <section id="practice">
+        <div class="shell">
+          <div class="section-heading">
+            <h2>What Agents Practice</h2>
+            <p>
+              The repository is intentionally small, with enough real structure
+              to exercise code reading, behavior changes, tests, docs, and PR
+              communication.
+            </p>
+          </div>
+          <div class="practice-grid">
+            <article class="practice-card">
+              <span class="dot" aria-hidden="true"></span>
+              <h3>Explain the model</h3>
+              <p>Trace task normalization, filtering, summaries, and sprint planning.</p>
+            </article>
+            <article class="practice-card">
+              <span class="dot" aria-hidden="true"></span>
+              <h3>Add a filter</h3>
+              <p>Keep CLI behavior focused while preserving existing report output.</p>
+            </article>
+            <article class="practice-card">
+              <span class="dot" aria-hidden="true"></span>
+              <h3>Validate fixtures</h3>
+              <p>Use deterministic data checks to keep the canonical board reliable.</p>
+            </article>
+            <article class="practice-card">
+              <span class="dot" aria-hidden="true"></span>
+              <h3>Extend reports</h3>
+              <p>Render Markdown output that remains easy to test and review.</p>
+            </article>
+            <article class="practice-card">
+              <span class="dot" aria-hidden="true"></span>
+              <h3>Draft the PR</h3>
+              <p>Summarize scope, checks, and tradeoffs for future agents.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="workflow" id="workflow">
+        <div class="shell workflow-grid">
+          <div>
+            <p class="eyebrow">Recommended workflow</p>
+            <h2>Small changes with checks agents can trust.</h2>
+            <p class="lede">
+              Start with the README and relevant source, pick one scenario, make
+              the smallest useful change, then rerun the fixture validation and
+              tests before writing the PR notes.
+            </p>
+          </div>
+          <div class="terminal" aria-label="Quick start commands">
+            <div class="terminal-bar" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <pre><code>rtk node --test
+rtk node scripts/validate-fixtures.js
+rtk node src/cli.js --file data/tasks.json
+
+rtk npm test
+rtk npm run validate
+rtk npm run report</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="map">
+        <div class="shell">
+          <div class="section-heading">
+            <h2>Project Map</h2>
+            <p>
+              The codebase has just enough surface area for meaningful agent
+              practice without requiring package installation.
+            </p>
+          </div>
+          <div class="map-grid">
+            <article class="map-card">
+              <h3><code>src/task-board.js</code></h3>
+              <p>Task normalization, filtering, summaries, and sprint planning.</p>
+            </article>
+            <article class="map-card">
+              <h3><code>src/report.js</code></h3>
+              <p>Markdown board report rendering for deterministic output.</p>
+            </article>
+            <article class="map-card">
+              <h3><code>src/cli.js</code></h3>
+              <p>Command-line entrypoint for reading fixtures and printing reports.</p>
+            </article>
+            <article class="map-card">
+              <h3><code>data/tasks.json</code></h3>
+              <p>Canonical fixture data for tests, reports, and validation.</p>
+            </article>
+            <article class="map-card">
+              <h3><code>test/</code></h3>
+              <p>Coverage using Node's built-in test runner.</p>
+            </article>
+            <article class="map-card">
+              <h3><code>docs/</code></h3>
+              <p>Exercise scenarios and the agent playbook for focused PRs.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell">
+        Task Forge is a tiny no-dependency project for agent repository workflows.
+      </div>
+    </footer>
+  </body>
+</html>

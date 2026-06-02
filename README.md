@@ -30,6 +30,13 @@ rtk npm run validate
 rtk npm run report
 ```
 
+## Landing Page
+
+This repository includes a static [landing page](index.html) for GitHub Pages.
+To publish it, open the repository settings on GitHub, go to **Pages**, choose
+**Deploy from a branch**, select the default branch, and set the source folder
+to `/ (root)`.
+
 ## Tiny Code Spells
 
 Fake examples for the vibe:
