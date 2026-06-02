@@ -33,6 +33,8 @@ rtk npm run report
 ## Landing Page
 
 This repository includes a static [landing page](index.html) for GitHub Pages.
+The page supports light and dark themes, with a header switcher that remembers
+the visitor's choice and falls back to their system preference on first load.
 To publish it, open the repository settings on GitHub, go to **Pages**, choose
 **Deploy from a branch**, select the default branch, and set the source folder
 to `/ (root)`.
