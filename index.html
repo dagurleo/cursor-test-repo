@@ -39,6 +39,8 @@
         --header-line: rgb(23 32 35 / 10%);
         --lede: #3d4a4d;
         --hero-line: rgb(23 32 35 / 16%);
+        --hero-band: #e7efea;
+        --hero-card: #fbfcf8;
         --workflow-bg: #eef4f1;
         --terminal-bg: #172023;
         --terminal-ink: #ecf2ee;
@@ -60,6 +62,8 @@
         --header-line: rgb(240 246 242 / 12%);
         --lede: #c7d4cf;
         --hero-line: rgb(240 246 242 / 16%);
+        --hero-band: #1c2927;
+        --hero-card: #1b2826;
         --workflow-bg: #121d1b;
         --terminal-bg: #08100f;
         --terminal-ink: #e9f4ef;
@@ -199,14 +203,18 @@
 
       .hero {
         min-height: calc(100svh - 64px);
-        padding: 56px 0 40px;
         display: grid;
         align-items: center;
+        border-bottom: 1px solid var(--line);
+        background:
+          linear-gradient(90deg, transparent 0 58%, var(--hero-band) 58% 100%),
+          var(--paper);
+        padding: 64px 0 48px;
       }
 
       .hero-grid {
         display: grid;
-        grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.15fr);
+        grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
         gap: 48px;
         align-items: center;
       }
@@ -229,7 +237,7 @@
       h1 {
         max-width: 720px;
         margin-bottom: 20px;
-        font-size: 4rem;
+        font-size: 4.35rem;
         line-height: 1;
       }
 
@@ -244,7 +252,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
-        margin-bottom: 28px;
+        margin-bottom: 26px;
       }
 
       .button {
@@ -274,13 +282,16 @@
       .stats {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
+        gap: 12px;
         max-width: 620px;
       }
 
       .stat {
+        border: 1px solid var(--line);
         border-top: 3px solid var(--teal);
-        padding-top: 10px;
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--panel) 82%, transparent);
+        padding: 12px;
       }
 
       .stat:nth-child(2) {
@@ -303,16 +314,57 @@
 
       .hero-visual {
         position: relative;
+        min-height: 520px;
+        overflow: hidden;
+        border: 1px solid var(--hero-line);
+        border-radius: 8px;
+        background:
+          linear-gradient(145deg, rgb(255 255 255 / 72%), transparent 44%),
+          linear-gradient(180deg, var(--hero-card), var(--hero-band));
+        box-shadow: var(--shadow);
+      }
+
+      .hero-visual::before {
+        position: absolute;
+        inset: 18px;
+        border: 1px solid color-mix(in srgb, var(--teal) 24%, transparent);
+        border-radius: 8px;
+        content: "";
+      }
+
+      .image-badge {
+        position: absolute;
+        top: 22px;
+        left: 22px;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--panel) 90%, transparent);
+        padding: 8px 10px;
+        color: var(--muted);
+        font-size: 0.86rem;
+        font-weight: 750;
+      }
+
+      .image-badge::before {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--green);
+        content: "";
       }
 
       .hero-visual img {
+        position: absolute;
+        right: -10%;
+        bottom: -5%;
         display: block;
-        width: 100%;
-        aspect-ratio: 16 / 9;
-        object-fit: cover;
-        border: 1px solid var(--hero-line);
-        border-radius: 8px;
-        box-shadow: var(--shadow);
+        width: min(118%, 720px);
+        max-width: none;
+        height: auto;
       }
 
       main {
@@ -478,6 +530,7 @@
         .hero {
           min-height: auto;
           padding-top: 40px;
+          background: var(--paper);
         }
 
         h1 {
@@ -486,6 +539,7 @@
 
         .hero-visual {
           max-width: 760px;
+          min-height: 460px;
         }
 
         .practice-grid,
@@ -530,6 +584,16 @@
         .practice-grid,
         .map-grid {
           grid-template-columns: 1fr;
+        }
+
+        .hero-visual {
+          min-height: 340px;
+        }
+
+        .hero-visual img {
+          right: -18%;
+          bottom: -2%;
+          width: 125%;
         }
 
         .section-heading {
@@ -585,7 +649,7 @@
       <div class="shell hero-grid">
         <div>
           <p class="eyebrow">No-dependency JavaScript playground</p>
-          <h1>Task Forge: Agent Playground</h1>
+          <h1>Task Forge Agent Playground</h1>
           <p class="lede">
             A compact repository where agents can read unfamiliar code, make a
             focused change, run deterministic checks, and leave a tidy pull
@@ -610,12 +674,13 @@
             </div>
           </div>
         </div>
-        <div class="hero-visual" aria-label="Task Forge workflow illustration">
+        <div class="hero-visual" aria-label="Task Forge robot header image">
+          <span class="image-badge">Ready for the next PR</span>
           <img
-            src="assets/task-forge-hero.png"
-            alt="A clean developer workbench with a task board, terminal, notes, and test checkmarks."
-            width="1672"
-            height="941"
+            src="assets/robot-header.png"
+            alt="A friendly white robot assistant wearing a headset."
+            width="1232"
+            height="1180"
           >
         </div>
       </div>
