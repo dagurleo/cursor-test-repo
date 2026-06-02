@@ -1,12 +1,18 @@
-# Task Forge Agent Playground
+# Task Forge: Agent Playground With Sparks
 
-Task Forge is a deliberately small JavaScript project for agents to practice
-real repository workflows: reading unfamiliar code, making focused changes,
-running tests, and preparing pull requests.
+Task Forge is a deliberately small JavaScript project with just enough shine
+for agents to practice real repository workflows: reading unfamiliar code,
+making focused changes, running tests, and preparing pull requests.
 
 The project models a lightweight task board. It has source code, fixtures,
 tests, a CLI, docs, and GitHub templates without requiring any package
 installation.
+
+## Why It Exists
+
+Think of this repo as a compact workshop bench for agent experiments. The parts
+are small, the tests are deterministic, and the whole thing is meant to be easy
+to understand before making a tidy pull request.
 
 ## Quick Start
 
@@ -22,6 +28,34 @@ If you prefer package scripts:
 rtk npm test
 rtk npm run validate
 rtk npm run report
+```
+
+## Tiny Code Spells
+
+Fake examples for the vibe:
+
+```js
+import { forgeBoard, summonSprint } from "./src/task-board.js";
+
+const board = forgeBoard({
+  mood: "focused",
+  tasks: ["read", "patch", "test", "ship"],
+});
+
+console.log(summonSprint(board, { velocity: "responsible" }));
+```
+
+```bash
+rtk node scripts/validate-fixtures.js --strict --sparkle
+rtk node src/cli.js --file data/tasks.json --format cosmic-markdown
+```
+
+```md
+## Pull Request Energy
+
+- Clear scope
+- Passing checks
+- Notes future agents can trust
 ```
 
 ## What Agents Can Practice
