@@ -35,6 +35,10 @@ rtk npm run report
 This repository includes a static [landing page](index.html) for GitHub Pages.
 The page supports light and dark themes, with a header switcher that remembers
 the visitor's choice and falls back to their system preference on first load.
+It also links to a small cat article series through the header dropdown:
+[cat articles](cats.html), [care basics](cat-care.html),
+[indoor enrichment](cat-enrichment.html), and
+[behavior signals](cat-behavior.html).
 To publish it, open the repository settings on GitHub, go to **Pages**, choose
 **Deploy from a branch**, select the default branch, and set the source folder
 to `/ (root)`.
