@@ -84,8 +84,10 @@ Suggested exercises live in [docs/scenarios.md](docs/scenarios.md).
 
 ## Project Map
 
-- [src/task-board.js](src/task-board.js) contains task normalization,
-  filtering, summaries, and sprint planning.
+- [src/task-board.js](src/task-board.js) exposes board workflows for creating,
+  completing, filtering, summarizing, and sprint planning tasks.
+- [src/task-schema.js](src/task-schema.js) contains shared task statuses,
+  priorities, validation errors, and normalization helpers.
 - [src/report.js](src/report.js) renders a Markdown board report.
 - [src/cli.js](src/cli.js) exposes the report generator as a command.
 - [data/tasks.json](data/tasks.json) is the canonical fixture file.
