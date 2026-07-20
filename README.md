@@ -1,5 +1,7 @@
 # Task Forge: Agent Playground With Sparks
 
+Hello from codex test
+
 Task Forge is a deliberately small JavaScript project with just enough shine
 for agents to practice real repository workflows: reading unfamiliar code,
 making focused changes, running tests, and preparing pull requests.
